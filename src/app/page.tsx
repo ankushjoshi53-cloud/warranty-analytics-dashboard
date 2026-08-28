@@ -79,10 +79,33 @@ export default function Home() {
     async function loadData() {
       setLoading(true)
 
-      const { data, error } = await supabase
-        .from('warranty_master')
-        .select('*')
-        .limit(5000)
+      const PAGE_SIZE = 1000
+let allRows: Warranty[] = []
+let from = 0
+
+while (true) {
+  const { data: rows, error } = await supabase
+    .from('warranty_master')
+    .select('*')
+    .range(from, from + PAGE_SIZE - 1)
+
+  if (error) {
+    setError(error.message)
+    setData([])
+    setLoading(false)
+    return
+  }
+
+  allRows = [...allRows, ...(rows || [])]
+
+  if (!rows || rows.length < PAGE_SIZE) {
+    break
+  }
+
+  from += PAGE_SIZE
+}
+
+setData(allRows)
 
       if (error) {
         setError(error.message)
