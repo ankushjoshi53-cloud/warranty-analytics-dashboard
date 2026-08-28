@@ -107,12 +107,7 @@ while (true) {
 
 setData(allRows)
 
-      if (error) {
-        setError(error.message)
-        setData([])
-      } else {
-        setData((data || []) as Warranty[])
-      }
+     
 
       setLoading(false)
     }
